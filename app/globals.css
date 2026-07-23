@@ -1,26 +1,128 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #666666;
+
+  --primary: #000000;
+  --secondary: #FFFFFF;
+  --tertiary: #F0F0F0;
+  --quadrary: #666666;
+
+  /* for the colors of border */
+  --border-color: #e5e5e5;
+}
+
+@font-face {
+  font-family: "Satoshi-Regular";
+  src: url("/fonts/satoshi/Satoshi-Regular.otf") format("opentype");
+  /* font-weight: 400; */
+  /* font-style: normal; */
+}
+
+@font-face {
+  font-family: "Satoshi-Medium";
+  src: url("/fonts/satoshi/Satoshi-Medium.otf") format("opentype");
+  /* font-weight: 500; */
+  /* font-style: normal; */
+}
+
+@font-face {
+  font-family: "Satoshi-Bold";
+  src: url("/fonts/satoshi/Satoshi-Bold.otf") format("opentype");
+  /* font-weight: 700; */
+  /* font-style: normal; */
+}
+
+@font-face {
+  font-family: "Satoshi-Light";
+  src: url("/fonts/satoshi/Satoshi-Light.otf") format("opentype");
+  /* font-weight: 300; */
+  /* font-style: normal; */
+}
+
+/* for integracf font */
+@font-face {
+  font-family: "Integralcf-Bold";
+  src: url("/fonts/integralCF/Fontspring-DEMO-integralcf-bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* COLORS THEME */
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+
+  /*  FOR THE COLOR OF BORDER */
+  --color-border-color: var(--border-color);
+
+
+  /* --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono); */
+
+  /* Satoshi */
+  --font-satoshi-light: "Satoshi-Light", sans-serif;
+  --font-satoshi-regular: "Satoshi-Regular", sans-serif;
+  --font-satoshi-medium: "Satoshi-Medium", sans-serif;
+  --font-satoshi-bold: "Satoshi-Bold", sans-serif;
+
+  /* Integral CF */
+  --font-integral-bold: "Integralcf-Bold", sans-serif;
+
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
-}
+} */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-satoshi-regular);
+}
+
+h1,
+h2 {
+  font-family: var(--font-integral-bold);
+}
+
+button {
+  cursor: pointer
+}
+
+.brand-slider .swiper-wrapper {
+  transition-timing-function: linear !important;
+}
+
+
+.prada-logo {
+  margin-inline: auto;
+}
+
+.container {
+   @apply max-sm:w-[98%] max-sm:px-2 mx-auto;
+
+}
+
+.review-slider .swiper-slide:not(.swiper-slide-active):not(.swiper-slide-next):not(.swiper-slide-prev) {
+  @apply xl:blur-[2px] xl:duration-1000 xl:transition
+}
+
+
+/* .review-slider .swiper-slide.swiper-slide-next,.review-slider .swiper-slide.swiper-slide-prev{
+  @apply max-xl:blur-[2px] max-xl:duration-1000 max-xl:transition 
+
+} */
+   
+.review-slider .swiper-slide:not(.swiper-slide-active) {
+  @apply max-xl:blur-[2px] max-xl:duration-1000 max-xl:transition
 }
