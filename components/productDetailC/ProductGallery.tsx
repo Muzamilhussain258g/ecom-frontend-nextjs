@@ -1,105 +1,75 @@
 'use client'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import React, { useRef, useState } from 'react';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
 import "swiper/css";
 import Image from 'next/image';
 
 // import required modules
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
-import type { Swiper as SwiperType } from "swiper";
-import { useState } from 'react';
 
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/navigation";
-import "swiper/css/thumbs";
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
+import 'swiper/css/thumbs';
+
 
 function ProductGallery() {
-    const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+    const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
     return (
-        <>
-            <Swiper
-                style={{
-                    '--swiper-navigation-color': '#fff',
-                    '--swiper-pagination-color': '#fff',
-                }}
-                spaceBetween={10}
-                navigation={true}
-                thumbs={{ swiper: thumbsSwiper }}
-                modules={[FreeMode, Navigation, Thumbs]}
-                className="mySwiper2"
-            >
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-1.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-2.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-3.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-4.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-5.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-6.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-7.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-8.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-9.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-10.jpg" />
-                </SwiperSlide>
-            </Swiper>
-            <Swiper
-                onSwiper={setThumbsSwiper}
-                spaceBetween={10}
-                slidesPerView={4}
-                freeMode={true}
-                watchSlidesProgress={true}
-                modules={[FreeMode, Navigation, Thumbs]}
-                className="mySwiper"
-            >
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-1.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-2.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-3.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-4.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-5.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-6.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-7.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-8.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-9.jpg" />
-                </SwiperSlide>
-                <SwiperSlide>
-                    <img src="https://swiperjs.com/demos/images/abstract-10.jpg" />
-                </SwiperSlide>
-            </Swiper>
-        </>
+        <div className='grid grid-cols-8  gap-4'>
+            <div className='col-span-2'>
+                <Swiper
+                    onSwiper={setThumbsSwiper}
+                    spaceBetween={15}
+                    slidesPerView={3}
+                    freeMode={true}
+                    direction='vertical'
+                    watchSlidesProgress={true}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    className="mySwiper max-h-[600px]"
+                >
+                    {[...Array(10)].map((_, i) => (
+                        <SwiperSlide key={i} >
+                                <Image
+                                    src={`/images/shirt2.png`}  // agar tumhare images shirt1.png, shirt2.png ... shirt10.png hain
+                                    width={500}
+                                    height={500}
+                                    alt={`Shirt ${i + 1}`}
+                                    className='max-h-full'
+
+                                />
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+            <div className='col-span-6'>
+                <Swiper
+                    spaceBetween={10}
+                    // navigation={true}
+                    thumbs={{ swiper: thumbsSwiper }}
+                    modules={[FreeMode, Navigation, Thumbs]}
+                    className="mySwiper2"
+                >
+                    {[...Array(10)].map((_, i) => (
+                        <SwiperSlide key={i}>
+                            <div className='h-[600px] rounded-2xl overflow-hidden relative'>
+                                <Image
+                                    src={`/images/shirt2.png`}  // agar tumhare images shirt1.png, shirt2.png ... shirt10.png hain
+
+                                    alt={`Shirt ${i + 1}`}
+                                    fill
+                                    objectFit='cover'
+                                />
+                            </div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
+
+
+        </div>
     );
 }
 
