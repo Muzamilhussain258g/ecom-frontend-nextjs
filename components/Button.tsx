@@ -1,7 +1,7 @@
 import React from 'react'
 
 export interface ButtonData {
-    text: string
+    text?: string
     icon?: React.ReactNode,
     variant?: 'black' | 'white'
     className?: string
@@ -22,6 +22,7 @@ const Button = ({ btnProps: {
 } }: ButtonProps) => {
     return (
         <button className={`
+            max-sm:w-full
             ${variant === "black"
                 ? "bg-primary text-secondary"
                 : "bg-secondary text-primary border border-border-color"}
@@ -29,7 +30,7 @@ const Button = ({ btnProps: {
             ${className}
         `}
             onClick={onClick} >
-            {text}
+            {text && text}
             {icon && <span className='ml-2'>{icon}</span>}
         </button >
     )

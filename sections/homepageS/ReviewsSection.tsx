@@ -8,6 +8,7 @@ import ReactStars from 'react-stars'
 import { Swiper as SwiperType } from "swiper";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import 'swiper/css/navigation';
+import ReviewCard from '@/components/ReviewCard'
 
 
 const ReviewsSection = () => {
@@ -39,7 +40,7 @@ const ReviewsSection = () => {
                     </button>
                 </div>
             </div>
-            <Swiper className='py-10! xl:px-[10%]! lg:px-[25%]! px-[15%]! review-slider'
+            <Swiper className='review-slider'
                 spaceBetween={10}
                 modules={[Navigation]}
                 navigation={{
@@ -62,12 +63,12 @@ const ReviewsSection = () => {
                         // },
 
                         1024: {
-                            slidesPerView: 1,
+                            slidesPerView: 2,
                             spaceBetween: 10,
                         },
 
                         1280: {
-                            slidesPerView: 3,
+                            slidesPerView: 3.5,
                             spaceBetween: 10,
                         },
                     }
@@ -78,14 +79,14 @@ const ReviewsSection = () => {
                 //     // disableOnInteraction: false,
                 // }}
                 loop={true}
-                slidesPerView={1}
+                slidesPerView={1.5}
                 centeredSlides
             >
 
 
                 {reviews.map(review => (
                     <SwiperSlide>
-                        <div className='py-7 px-8 rounded-2xl border-border-color border'>
+                        {/* <div className='py-7 px-8 rounded-2xl border-border-color border'>
                             <ReactStars
                                 count={5}
                                 size={24}
@@ -101,7 +102,8 @@ const ReviewsSection = () => {
                                 </svg>
                             </div>
                             <div className='h-40 overflow-y-auto'>{review.review}</div>
-                        </div>
+                        </div> */}
+                        <ReviewCard rating={review.rating} review={review.review} username={review.name}/>
                     </SwiperSlide>
 
                 ))}

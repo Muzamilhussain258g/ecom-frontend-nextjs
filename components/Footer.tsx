@@ -21,11 +21,11 @@ const Footer = () => {
                 </div>
                 <div className='lg:col-span-4 grid grid-cols-2 md:grid-cols-4 gap-y-10'>
                     {footerLinks.map(it => (
-                        <div className=''>
+                        <div className='' key={it.title}>
                             <h3 className='font-satoshi-medium text-primary'>{it.title}</h3>
                             <div className='mt-6 flex flex-col gap-3'>
                                 {it.links.map(link => (
-                                    <Link href={link.href}>{link.name}</Link>
+                                    <Link href={link.href} key={link.name}>{link.name}</Link>
                                 ))}
                             </div>
                         </div>

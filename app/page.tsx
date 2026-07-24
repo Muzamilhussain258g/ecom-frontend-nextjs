@@ -12,15 +12,13 @@ import React from 'react'
 const page = () => {
   return (
     <>
-      {/* <Header /> */}
       <HeroSection />
       <Slidder />
       <NewArrivalSection />
       <TopSellingSection />
       <CategorySection />
       <ReviewsSection />
-      <UpToDateSection />
-      <Footer />
+      
     </>
   )
 }

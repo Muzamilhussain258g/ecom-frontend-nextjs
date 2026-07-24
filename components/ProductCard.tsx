@@ -44,7 +44,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                 <div className='text-lg sm:text-[24px] font-satoshi-bold! flex items-center gap-4.5'>
                     <span className='text-primary'>${product.price}</span>
                     {product.oldPrice && (
-                        <span className='line-through'>
+                        <span className='line-through text-[#B3B3B3]'>
                             ${product.oldPrice}
                         </span>
                     )}

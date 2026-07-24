@@ -7,9 +7,9 @@ import { IoCheckmarkOutline } from 'react-icons/io5'
 
 function ProductDetailSection() {
     return (
-        <main>
-            <div className='container grid grid-cols-2 md:gap-10 my-100 relative items-start'>
-                <div className='sticky top-10'>
+        <main className="py-10">
+            <div className='container grid md:grid-cols-2 md:gap-10 relative items-start'>
+                <div className='md:sticky top-10'>
                     <ProductGallery />
                 </div>
                 <div className=''>
@@ -18,7 +18,7 @@ function ProductDetailSection() {
                     <div className='text-lg sm:text-[24px] font-satoshi-bold! flex items-center gap-4.5 my-3.5'>
                         <span className='text-primary'>$400</span>
                         {/* {product.oldPrice && ( */}
-                        <span className='line-through'>
+                        <span className='line-through text-[#B3B3B3]'>
                             $3200
                         </span>
                         {/* )} */}
