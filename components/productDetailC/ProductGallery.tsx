@@ -22,7 +22,7 @@ function ProductGallery() {
             <div className='col-span-8 lg:col-span-2 max-lg:order-2'>
                 <Swiper
                     onSwiper={setThumbsSwiper}
-                    spaceBetween={15}
+                    // spaceBetween={15}
                     slidesPerView={3}
                     freeMode={true}
                     direction='horizontal'
@@ -61,12 +61,15 @@ function ProductGallery() {
                 >
                     {[...Array(10)].map((_, i) => (
                         <SwiperSlide key={i}>
-                            <div className='h-[600px] rounded-2xl overflow-hidden relative'>
+                            <div className='lg:h-[600px] rounded-2xl overflow-hidden relative'>
                                 <Image
                                     src={`/images/shirt2.png`}  // agar tumhare images shirt1.png, shirt2.png ... shirt10.png hain
 
                                     alt={`Shirt ${i + 1}`}
-                                    fill
+                                    height={500}
+                                    width={500}
+                                    className='h-full w-full'
+                                    // fill
                                     // objectFit='cover'
                                 />
                             </div>
