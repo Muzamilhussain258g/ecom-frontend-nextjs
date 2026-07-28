@@ -1,29 +1,110 @@
 "use client"
-import { Check, ChevronRight, Sliders } from 'lucide-react'
+import { Check, ChevronRight, Sliders, SlidersHorizontal, X } from 'lucide-react'
 import {
     Accordion,
     AccordionContent,
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import React, { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Slider } from '@/components/ui/slider'
 import Button from '../Button'
 
 
-export default function Filters() {
+interface FiltersProps {
+    variant?: "desktop" | "mobile"
+}
+
+export default function Filters({
+    variant = "desktop",
+}: FiltersProps) {
     const [price, setPrice] = useState([50, 200]);
     const [selectedColor, setSelectedColor] = useState("blue");
     const [selectedSize, setSelectedSize] = useState("large");
+    const [isOpen, setIsOpen] = useState(false);
+    const triggerRef = useRef<HTMLButtonElement>(null);
+    const sheetRef = useRef<HTMLDivElement>(null);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
 
+    const closeFilters = () => setIsOpen(false);
 
-    return (
-        <div className='hidden md:block px-6 py-5 rounded-2xl border sticky top-10'>
+    useEffect(() => {
+        if (variant !== "mobile" || !isOpen) return;
+
+        const previousOverflow = document.body.style.overflow;
+        const trigger = triggerRef.current;
+
+        document.body.style.overflow = "hidden";
+        closeButtonRef.current?.focus();
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setIsOpen(false);
+                return;
+            }
+
+            if (event.key !== "Tab") return;
+
+            const focusableElements =
+                sheetRef.current?.querySelectorAll<HTMLElement>(
+                    'a[href], button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
+                );
+
+            if (!focusableElements?.length) return;
+
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (event.shiftKey && document.activeElement === firstElement) {
+                event.preventDefault();
+                lastElement.focus();
+            } else if (!event.shiftKey && document.activeElement === lastElement) {
+                event.preventDefault();
+                firstElement.focus();
+            }
+        };
+
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", handleKeyDown);
+            trigger?.focus();
+        };
+    }, [isOpen, variant]);
+
+    const filterPanel = (
+        <div className={
+            variant === "desktop"
+                ? "sticky top-10 hidden rounded-2xl border px-6 py-5 md:block"
+                : "flex min-h-0 flex-1 flex-col px-5 pb-5"
+        }>
             <div className="flex justify-between pb-6 border-b ">
-                <h3 className="font-bold text-[20px] text-primary">Filters</h3>
-                <Sliders size={24} />
+                <h3
+                    id={variant === "mobile" ? "mobile-filter-title" : undefined}
+                    className="font-bold text-[20px] text-primary"
+                >
+                    Filters
+                </h3>
+                {variant === "mobile" ? (
+                    <button
+                        ref={closeButtonRef}
+                        type="button"
+                        onClick={closeFilters}
+                        className="-mr-2 flex size-10 items-center justify-center rounded-full text-black/50 transition-colors hover:bg-tertiary hover:text-primary"
+                        aria-label="Close filters"
+                    >
+                        <X size={24} />
+                    </button>
+                ) : (
+                    <Sliders size={24} />
+                )}
             </div>
-            <div className='max-h-[65vh] overflow-y-auto hide-scrollbar my-2'>
+            <div className={
+                variant === "desktop"
+                    ? "my-2 max-h-[65vh] overflow-y-auto hide-scrollbar"
+                    : "my-2 min-h-0 flex-1 overflow-y-auto overscroll-contain hide-scrollbar"
+            }>
                 <Accordion
                     className="w-full pb-6 pt-2 border-b"
 
@@ -288,11 +369,57 @@ export default function Filters() {
             <Button btnProps={{
                 text: "Apply Filter",
                 className: "py-6 w-full",
-                variant: "black"
+                variant: "black",
+                onClick: variant === "mobile" ? closeFilters : undefined,
             }} />
 
         </div>
-    )
+    );
+
+    if (variant === "desktop") return filterPanel;
+
+    return (
+        <>
+            <button
+                ref={triggerRef}
+                type="button"
+                onClick={() => setIsOpen(true)}
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-tertiary text-primary transition-colors hover:bg-black hover:text-white md:hidden"
+                aria-label="Open filters"
+                aria-controls="mobile-filter-sheet"
+                aria-expanded={isOpen}
+            >
+                <SlidersHorizontal size={19} />
+            </button>
+
+            <div
+                className={`fixed inset-0 z-[70] bg-black/45 transition-opacity duration-300 md:hidden ${
+                    isOpen ? "visible opacity-100" : "invisible opacity-0"
+                }`}
+                onClick={closeFilters}
+                aria-hidden="true"
+            />
+
+            <div
+                ref={sheetRef}
+                id="mobile-filter-sheet"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="mobile-filter-title"
+                aria-hidden={!isOpen}
+                inert={!isOpen}
+                className={`fixed inset-x-0 bottom-0 z-[80] mx-auto flex h-[88dvh] max-h-[760px] w-full max-w-xl flex-col overflow-hidden rounded-t-[24px] bg-white pt-3 shadow-2xl transition-transform duration-300 ease-out md:hidden ${
+                    isOpen ? "translate-y-0" : "translate-y-full"
+                }`}
+            >
+                <div
+                    className="mx-auto mb-3 h-1 w-12 rounded-full bg-black/15"
+                    aria-hidden="true"
+                />
+                {filterPanel}
+            </div>
+        </>
+    );
 }
 
 const sizes = [
