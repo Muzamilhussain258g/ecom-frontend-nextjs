@@ -23,9 +23,9 @@ import ProductsGrid from "@/components/products/ProductsGrid"
 
 function AllProductsSections() {
     return (
-        <section className="py-10">
+        <section className="py-6 sm:py-10">
             <div className="container">
-                <Breadcrumb className="mb-10">
+                <Breadcrumb className="mb-6 sm:mb-10">
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink render={<Link href="/">Home</Link>} />
@@ -52,7 +52,7 @@ function AllProductsSections() {
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
-                <div className="grid  md:grid-cols-3 xl:grid-cols-4 gap-5 relative items-start">
+                <div className="relative grid items-start gap-5 md:grid-cols-3 xl:grid-cols-4">
                     <Filters />
                     <ProductsGrid />
                 </div>

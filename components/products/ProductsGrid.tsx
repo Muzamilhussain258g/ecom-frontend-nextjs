@@ -27,21 +27,23 @@ export default function ProductsGrid() {
     const [open, setOpen] = useState(false);
 
     return (
-        <div className='md:col-span-2 xl:col-span-3'>
-            <div className='flex justify-between'>
-                <h2 className='text-[32px] font-satoshi-bold! text-primary'>Casual</h2>
-                <div className='flex gap-4'>
-                    <div>Showing 1-10 of 100 Products</div>
-                    <div >Sort by:
+        <div className='min-w-0 md:col-span-2 xl:col-span-3'>
+            <div className='mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2'>
+                <h2 className='text-[28px] leading-tight font-satoshi-bold! text-primary sm:text-[32px]'>Casual</h2>
+                <div className='flex w-full min-w-0 items-center justify-between gap-2 text-sm sm:w-auto sm:justify-end sm:gap-4 sm:text-base'>
+                    <div className='min-w-0 whitespace-nowrap text-black/60'>
+                        Showing 1-10 of 100<span className='hidden sm:inline'> Products</span>
+                    </div>
+                    <div className='flex shrink-0 items-center whitespace-nowrap'>Sort by:
                         <DropdownMenu open={open} onOpenChange={setOpen}>
                             <DropdownMenuTrigger render={
-                                <button className='text-primary ml-1 font-bold inline-flex'>
+                                <button className='ml-1 inline-flex items-center whitespace-nowrap font-bold text-primary'>
                                     {sortOption === "priceLow"
                                         ? "Low to High"
                                         : sortOption === "priceHigh"
                                             ? "High to Low"
                                             : "High to Low"}
-                                    <ChevronDown />
+                                    <ChevronDown className='size-4 sm:size-5' />
                                 </button>
                             } />
                             <DropdownMenuContent className="w-32">
@@ -58,7 +60,7 @@ export default function ProductsGrid() {
                     </div>
                 </div>
             </div>
-            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-x-5 gap-y-8">
+            <div className="grid grid-cols-1 gap-x-3 gap-y-6 min-[375px]:grid-cols-2 sm:gap-x-5 sm:gap-y-8 md:grid-cols-2 xl:grid-cols-3">
                 {
                     [...Array(10)].map((el, i) => (
                         <ProductCard key={i} product={{

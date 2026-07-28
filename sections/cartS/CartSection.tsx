@@ -64,7 +64,7 @@ export default function CartSection() {
                                     />
                                     <div className='flex-1'>
                                         <div className='flex justify-between max-sm:gap-3'>
-                                            <h3 className='text-[20px] font-satoshi-bold text-primary'>Gradient Graphic T-shirt</h3>
+                                            <h3 className='sm:text-[20px] font-satoshi-bold text-primary'>Gradient Graphic T-shirt</h3>
                                             <PiTrashFill size={24} className='text-[#ff3333]' />
                                         </div>
                                         <div className='mt-1 text-sm'>
@@ -76,15 +76,14 @@ export default function CartSection() {
                                             Large
                                         </div>
                                         <div className='mt-4 flex justify-between items-center'>
-                                            <h3 className='text-[24px] font-satoshi-bold text-primary'>$240</h3>
+                                            <h3 className='text-lg sm:text-[24px] font-satoshi-bold text-primary'>$240</h3>
                                             <div className='bg-tertiary w-fit py-2 sm:py-3.5 px-3 sm:px-5 rounded-4xl gap-3 flex items-center text-primary'>
                                                 <button >
-                                                    <Minus />
+                                                    <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
                                                 </button>
                                                 <span>1</span>
                                                 <button >
-                                                    <Plus />
-                                                </button>
+                                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />                                                </button>
                                             </div>
                                         </div>
 
