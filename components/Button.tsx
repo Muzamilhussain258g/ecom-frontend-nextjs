@@ -22,6 +22,7 @@ const Button = ({ btnProps: {
 } }: ButtonProps) => {
     return (
         <button className={`
+            ${icon && "flex items-center text-center justify-center"}
             max-sm:w-full
             ${variant === "black"
                 ? "bg-primary text-secondary"
