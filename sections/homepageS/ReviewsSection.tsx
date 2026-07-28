@@ -3,8 +3,6 @@ import Heading from '@/components/Heading'
 import React, { useRef } from 'react'
 import { Autoplay, FreeMode, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
-// @ts-ignore
-import ReactStars from 'react-stars'
 import { Swiper as SwiperType } from "swiper";
 import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import 'swiper/css/navigation';

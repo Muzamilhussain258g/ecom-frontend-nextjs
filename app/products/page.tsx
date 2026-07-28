@@ -1,8 +1,12 @@
+import AllProductsSection from '@/sections/allProductsS/AllProductsSection'
 import React from 'react'
 
 function page() {
   return (
-    <div>page</div>
+    <>
+      <AllProductsSection />
+
+    </>
   )
 }
 

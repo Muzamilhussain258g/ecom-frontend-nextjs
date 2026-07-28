@@ -1,30 +1,53 @@
-import React from 'react'
-// @ts-ignore
-import ReactStars from 'react-stars'
+import { Star } from "lucide-react"
 
-export interface ProductRating {
-    rating: number; // optional, default 0
-    size?: number; // optional, default 24
-    edit?: boolean
+interface RatingProps {
+    rating: number
+    size?:number
 }
 
-
-
-const RatingStars = ({ rating = 0, size = 24, edit = false }: ProductRating) => {
+const RatingStars = ({ rating,
+    size=20
+ }: RatingProps) => {
     return (
-        <div className=' flex items-center gap-2'>
-            <ReactStars
-                count={5}
-                size={size}
-                value={rating ?? 0}
-                color2="#ffd700"
-                edit={edit} // read-only
+        <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map((star) => {
 
-            />
-            <span className='max-sm:text-sm'>
-                <span className='text-primary'>{rating ?? 0} </span>
-                /5
-            </span>
+                const fillPercentage = Math.min(
+                    Math.max(rating - star + 1, 0),
+                    1
+                ) * 100
+
+                return (
+                    <div
+                        key={star}
+                        className="relative"
+                        style={{
+                            width: size,
+                            height: size
+                        }}
+                    >
+                        {/* Empty Star */}
+                        <Star
+                            size={size}
+                            className="absolute text-[#FFD700]"
+                        />
+
+                        {/* Filled Portion */}
+                        <div
+                            className="absolute overflow-hidden"
+                            style={{
+                                width: `${fillPercentage}%`
+                            }}
+                        >
+                            <Star
+                                size={size}
+                                fill="#FFD700"
+                                color="#FFD700"
+                            />
+                        </div>
+                    </div>
+                )
+            })}
         </div>
     )
 }

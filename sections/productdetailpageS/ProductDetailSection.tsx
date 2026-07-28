@@ -8,12 +8,12 @@ import { IoCheckmarkOutline } from 'react-icons/io5'
 function ProductDetailSection() {
     return (
         <main className="py-10">
-            <div className='container grid md:grid-cols-2 md:gap-10 relative items-start'>
+            <div className='container grid md:grid-cols-2 md:gap-5 lg:gap-10 relative items-start'>
                 <div className='md:sticky top-10'>
                     <ProductGallery />
                 </div>
                 <div className=''>
-                    <h1 className="text-[40px] text-primary"> One Life Graphic Tshirt</h1>
+                    <h1 className="text-[30px] lg:text-[40px] text-primary"> One Life Graphic Tshirt</h1>
                     <RatingStars rating={4} />
                     <div className='text-lg sm:text-[24px] font-satoshi-bold! flex items-center gap-4.5 my-3.5'>
                         <span className='text-primary'>$400</span>
@@ -60,7 +60,7 @@ function ProductDetailSection() {
 
                     <div className='py-6 border-b border-border-color'>
                         Choose Size
-                        <div className='flex gap-2 mt-4'>
+                        <div className='flex gap-2 mt-4 flex-wrap'>
                             {[
                                 { label: "Small", value: "S" },
                                 { label: "Medium", value: "M" },

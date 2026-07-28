@@ -2,7 +2,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, Sliders } from 'lucide-react';
 import Button from '@/components/Button';
 import { BiAbacus } from 'react-icons/bi';
 import { GiAbacus } from 'react-icons/gi';
@@ -23,7 +23,7 @@ const ProductTabsSection = () => {
     return (
         <section className="py-10">
             <div className="container">
-                <Tabs defaultValue={activeTab} onValueChange={(value) => {
+                <Tabs value={activeTab} onValueChange={(value) => {
                     const params = new URLSearchParams(searchParams.toString());
 
                     params.set("tab", value);
@@ -44,22 +44,26 @@ const ProductTabsSection = () => {
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value={'rating-reviews'} className={"w-full mt-6"}>
-                        <div className='flex justify-between items-center'>
+                        <div className='flex justify-between items-center flex-wrap'>
                             <h4 className='text-[20px] font-bold text-primary flex items-end gap-1'>All Reviews
                                 <span className='text-[14px]! text-foreground mb-0.5'>(451)</span>
                             </h4>
-                            <div className='flex gap-2.5 items-center'>
-                                {/* Filters wala implement krdo  */}
-                                <button className='p-4 rounded-full bg-tertiary text-primary'>
-                                    <BiAbacus size={18} />
-                                </button>
+                            <div className='flex gap-1 sm:gap-2.5 items-center'>
+
                                 <DropdownMenu open={open} onOpenChange={setOpen} >
-                                    <DropdownMenuTrigger render={<button className="flex items-center gap-2 rounded-full text-primary px-7 py-4 bg-tertiary">
-                                        Latest
-                                        <ChevronDown
-                                            className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
-                                                }`}
-                                        />
+                                    <DropdownMenuTrigger render={<button className="flex items-center rounded-full text-primary bg-tertiary p-3">
+                                        {/* Desktop */}
+                                        <span className="hidden md:flex items-center gap-2">
+                                            Latest
+                                            <ChevronDown
+                                                className={`h-4 w-4 transition-transform duration-200 ${open ? "rotate-180" : ""
+                                                    }`}
+                                            />
+                                        </span>
+
+                                        {/* Mobile */}
+                                        <Sliders className="md:hidden h-5 w-5" />
+
                                     </button>
                                     } />
                                     <DropdownMenuContent className="w-32"

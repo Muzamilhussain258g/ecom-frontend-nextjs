@@ -31,7 +31,7 @@ function ProductGallery() {
                     breakpoints={{
                         1024: {
                             direction: "vertical",
-                            // slidesPerView: 4,
+                            slidesPerView: 'auto',
                             // spaceBetween: 15,
                         }
                     }}
@@ -44,14 +44,14 @@ function ProductGallery() {
                                 width={500}
                                 height={500}
                                 alt={`Shirt ${i + 1}`}
+                                // objectFit='cover'
                                 className='max-h-full'
-
                             />
                         </SwiperSlide>
                     ))}
                 </Swiper>
             </div>
-            <div className='col-span-8 md:col-span-6'>
+            <div className='col-span-8 lg:col-span-6'>
                 <Swiper
                     spaceBetween={10}
                     // navigation={true}
@@ -67,7 +67,7 @@ function ProductGallery() {
 
                                     alt={`Shirt ${i + 1}`}
                                     fill
-                                    objectFit='cover'
+                                    // objectFit='cover'
                                 />
                             </div>
                         </SwiperSlide>

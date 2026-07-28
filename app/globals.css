@@ -267,3 +267,16 @@ button {
     @apply font-sans;
   }
 }
+
+.hide-scrollbar {
+  overflow: auto; /* or scroll */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

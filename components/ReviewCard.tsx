@@ -1,6 +1,5 @@
 import React from 'react'
-// @ts-ignore
-import ReactStars from 'react-stars'
+import RatingStars from './RatingStars'
 
 export interface ReviewCardProps {
     rating: number,
@@ -19,14 +18,15 @@ const ReviewCard = ({
 }: ReviewCardProps) => {
     return (
         <div className='py-7 px-8 rounded-2xl border-border-color border'>
-            <ReactStars
+            {/* <ReactStars
                 count={5}
                 size={24}
                 value={rating}
                 color2={color ?? '#ffd700'}
                 edit={false}
 
-            />
+            /> */}
+            <RatingStars rating={4.5}/>
             <div className='flex gap-1 text-[20px] items-center'>
                 <h3 className='font-bold text-[20px] text-primary'>{username}</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 bg-[#01AB31] text-white rounded-full p-1">
@@ -34,7 +34,7 @@ const ReviewCard = ({
                 </svg>
             </div>
             <div className='h-40 overflow-y-auto mt-3'>{review}</div>
-            { dateOfReview && (
+            {dateOfReview && (
                 <div className='mt-6 text-[#000000]/60 font-satoshi-medium'>Posted on August 18, 2023</div>
             )}
         </div>

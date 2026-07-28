@@ -1,8 +1,8 @@
 "use client"
 import Image from 'next/image';
 import React from 'react'
-// @ts-ignore
-import ReactStars from 'react-stars'
+import RatingStars from './RatingStars';
+
 
 
 export interface ProductCardData {
@@ -28,14 +28,15 @@ const ProductCard = ({ product }: ProductCardProps) => {
             <div className='mt-4'>
                 <h3 className='text-primary text-md sm:text-[20px] font-satoshi-bold!'>{product.name}</h3>
                 <div className=' flex items-center gap-2'>
-                    <ReactStars
+                    {/* <ReactStars
                         count={5}
                         size={24}
                         value={product.rating}
                         color2={'#ffd700'}
                         edit={false}
 
-                    />
+                    /> */}
+                    <RatingStars rating={product.rating}/>
                     <span className='max-sm:text-sm'>
                         <span className='text-primary'>{product.rating} </span>
                         /5
