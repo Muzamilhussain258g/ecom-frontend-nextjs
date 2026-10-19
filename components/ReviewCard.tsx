@@ -26,7 +26,7 @@ const ReviewCard = ({
                 edit={false}
 
             /> */}
-            <RatingStars rating={4.5}/>
+            <RatingStars rating={rating}/>
             <div className='flex gap-1 text-[20px] items-center'>
                 <h3 className='font-bold text-[20px] text-primary'>{username}</h3>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="size-5 bg-[#01AB31] text-white rounded-full p-1">

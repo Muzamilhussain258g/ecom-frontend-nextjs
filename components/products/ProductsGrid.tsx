@@ -1,16 +1,13 @@
 "use client"
-import React, { useState } from 'react'
-import ProductCard from '../ProductCard'
+import React from 'react'
+import ProductCard, { ProductCardData } from '../ProductCard'
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuGroup,
-    DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuRadioGroup,
     DropdownMenuRadioItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
     Pagination,
@@ -23,18 +20,63 @@ import {
 } from "@/components/ui/pagination"
 import { ChevronDown } from 'lucide-react'
 import Filters from './Filters'
-export default function ProductsGrid() {
-    const [sortOption, setSortOption] = useState("priceLow")
-    const [open, setOpen] = useState(false);
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+
+interface ProductsGridProps {
+    products: ProductCardData[]
+    title?: string
+    page?: number
+    totalPages?: number
+    total?: number
+    limit?: number
+}
+
+export default function ProductsGrid({
+    products,
+    title = "Casual",
+    page = 1,
+    totalPages = 1,
+    total = 0,
+    limit = 12,
+}: ProductsGridProps) {
+    const router = useRouter()
+    const pathname = usePathname()
+    const searchParams = useSearchParams()
+    const sortOption = searchParams.get("sortOrder") === "desc" ? "priceHigh" : "priceLow"
+    const [open, setOpen] = React.useState(false)
+
+    const start = total === 0 ? 0 : (page - 1) * limit + 1
+    const end = Math.min(page * limit, total)
+
+    const setSort = (value: string) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("sortOrder", value === "priceHigh" ? "desc" : "asc")
+        params.set("page", "1")
+        router.push(`${pathname}?${params.toString()}`)
+    }
+
+    const pageHref = (p: number) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.set("page", String(p))
+        return `${pathname}?${params.toString()}`
+    }
+
+    const pagesToShow = Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
+        if (totalPages <= 5) return i + 1
+        if (page <= 3) return i + 1
+        if (page >= totalPages - 2) return totalPages - 4 + i
+        return page - 2 + i
+    })
 
     return (
         <div className='min-w-0 md:col-span-2 xl:col-span-3'>
             <div className='mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2'>
-                <h2 className='text-[28px] leading-tight font-satoshi-bold! text-primary sm:text-[32px]'>Casual</h2>
+                <h2 className='text-[28px] leading-tight font-satoshi-bold! text-primary sm:text-[32px]'>{title}</h2>
                 <Filters variant="mobile" />
                 <div className='max-sm:mt-2 flex w-full min-w-0 items-center justify-between gap-2 text-sm md:w-auto md:justify-end md:gap-4 md:text-base'>
                     <div className='min-w-0 whitespace-nowrap text-black/60'>
-                        Showing 1-10 of 100<span className='hidden sm:inline'> Products</span>
+                        Showing {start}-{end} of {total}<span className='hidden sm:inline'> Products</span>
                     </div>
                     <div className='flex shrink-0 items-center whitespace-nowrap'>
                         <span className='hidden min-[375px]:inline'>Sort by:</span>
@@ -42,20 +84,17 @@ export default function ProductsGrid() {
                             <DropdownMenuTrigger render={
                                 <button className='ml-1 inline-flex items-center whitespace-nowrap font-bold text-primary'>
                                     {sortOption === "priceLow"
-                                        ? "Low to High"
-                                        : sortOption === "priceHigh"
-                                            ? "High to Low"
-                                            : "High to Low"}
+                                        ? "A to Z"
+                                        : "Z to A"}
                                     <ChevronDown className='size-4 sm:size-5' />
                                 </button>
                             } />
                             <DropdownMenuContent className="w-32">
                                 <DropdownMenuGroup>
                                     <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
-                                    <DropdownMenuRadioGroup value={sortOption} onValueChange={setSortOption}>
-
-                                        <DropdownMenuRadioItem value="priceLow">Low to High</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="priceHigh">High to Low</DropdownMenuRadioItem>
+                                    <DropdownMenuRadioGroup value={sortOption} onValueChange={setSort}>
+                                        <DropdownMenuRadioItem value="priceLow">A to Z</DropdownMenuRadioItem>
+                                        <DropdownMenuRadioItem value="priceHigh">Z to A</DropdownMenuRadioItem>
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
@@ -64,50 +103,44 @@ export default function ProductsGrid() {
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-x-3 gap-y-6 min-[375px]:grid-cols-2 sm:gap-x-5 sm:gap-y-8 md:grid-cols-2 xl:grid-cols-3">
-                {
-                    [...Array(10)].map((el, i) => (
-                        <ProductCard key={i} product={{
-                            id: 1,
-                            name: "One Life Graphic T-shirt",
-                            image: "/images/shirt2.png",
-                            rating: 4.5,
-                            reviews: 451,
-                            price: 260,
-                            oldPrice: 300,
-                            discount: "-40%",
-                            category: "T-shirts",
-                        }} />
+                {products.length === 0 ? (
+                    <p className="col-span-full text-black/60">No products found.</p>
+                ) : (
+                    products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
                     ))
-                }
+                )}
             </div>
 
-            <Pagination className='mt-10'>
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#" isActive>
-                            2
-                        </PaginationLink>
-                    </PaginationItem>
-
-                    <PaginationItem>
-                        <PaginationEllipsis />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#" isActive>
-                            20
-                        </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationNext href="#" />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+            {totalPages > 1 && (
+                <Pagination className='mt-10'>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious href={page > 1 ? pageHref(page - 1) : "#"} />
+                        </PaginationItem>
+                        {pagesToShow[0] > 1 && (
+                            <PaginationItem>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        )}
+                        {pagesToShow.map((p) => (
+                            <PaginationItem key={p}>
+                                <PaginationLink href={pageHref(p)} isActive={p === page}>
+                                    {p}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        {pagesToShow[pagesToShow.length - 1] < totalPages && (
+                            <PaginationItem>
+                                <PaginationEllipsis />
+                            </PaginationItem>
+                        )}
+                        <PaginationItem>
+                            <PaginationNext href={page < totalPages ? pageHref(page + 1) : "#"} />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+            )}
         </div>
     )
 }

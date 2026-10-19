@@ -67,7 +67,7 @@ const Header = () => {
   }, [isMenuOpen])
 
   return (
-    <header className="relative z-40 border-b border-black/10 bg-white">
+    <header className="relative z-40 border-b border-black/10 bg-white sticky top-0">
       <div className="container flex h-16 items-center gap-3 sm:h-[76px] lg:gap-6">
         <button
           ref={menuButtonRef}
@@ -125,15 +125,20 @@ const Header = () => {
         </nav>
 
         <div className="ml-auto flex min-w-0 items-center gap-1 sm:gap-2 lg:flex-1">
-          <label className="hidden h-12 min-w-0 flex-1 items-center gap-2 rounded-full bg-tertiary px-4 lg:flex">
+          <form
+            action="/products"
+            method="get"
+            className="hidden h-12 min-w-0 flex-1 items-center gap-2 rounded-full bg-tertiary px-4 lg:flex"
+          >
             <Search className="shrink-0 text-black/40" size={22} />
             <span className="sr-only">Search for products</span>
             <input
+              name="search"
               type="search"
               placeholder="Search for products..."
               className="w-full bg-transparent text-primary outline-none placeholder:text-black/40"
             />
-          </label>
+          </form>
 
           <button
             type="button"
@@ -144,14 +149,14 @@ const Header = () => {
             <Search size={23} strokeWidth={1.8} />
           </button>
           <Link
-            href="/cart"
+            href="/account/cart"
             className="flex size-10 items-center justify-center rounded-full text-primary transition-colors hover:bg-tertiary"
             aria-label="Shopping cart"
           >
             <ShoppingCartIcon size={23} strokeWidth={1.8} />
           </Link>
           <Link
-            href="/"
+            href="/account"
             className="hidden size-10 items-center justify-center rounded-full text-primary transition-colors hover:bg-tertiary sm:flex"
             aria-label="Your account"
           >
@@ -198,15 +203,21 @@ const Header = () => {
         </div>
 
         <div className="flex-1 overflow-y-auto px-5 py-6">
-          <label className="mb-7 flex h-12 items-center gap-2 rounded-full bg-tertiary px-4">
+          <form
+            action="/products"
+            method="get"
+            className="mb-7 flex h-12 items-center gap-2 rounded-full bg-tertiary px-4"
+            onSubmit={closeMenu}
+          >
             <Search className="shrink-0 text-black/45" size={21} />
             <span className="sr-only">Search for products</span>
             <input
+              name="search"
               type="search"
               placeholder="Search for products..."
               className="w-full bg-transparent text-primary outline-none placeholder:text-black/40"
             />
-          </label>
+          </form>
 
           <nav className="space-y-1 text-primary" aria-label="Mobile main navigation">
             <button
@@ -262,7 +273,7 @@ const Header = () => {
 
         <div className="border-t border-black/10 p-5">
           <Link
-            href="/"
+            href="/account"
             onClick={closeMenu}
             className="flex min-h-12 items-center gap-3 rounded-xl bg-primary px-4 font-medium text-white"
           >

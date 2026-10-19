@@ -1,7 +1,8 @@
-import React from 'react'
+"use client"
+
+import React, { useTransition } from 'react'
 import {
     Breadcrumb,
-    BreadcrumbEllipsis,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
@@ -11,103 +12,157 @@ import {
 import Link from 'next/link'
 import Heading from '@/components/Heading'
 import Image from 'next/image'
-import { TbTrash } from 'react-icons/tb'
-import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react'
-import { BsTrash2Fill } from 'react-icons/bs'
+import { ArrowRight, Minus, Plus } from 'lucide-react'
 import { PiTrashFill } from 'react-icons/pi'
 import { RiCoupon2Line } from 'react-icons/ri'
 import Button from '@/components/Button'
+import { customerBrowserFetch } from '@/lib/api/browser'
+import type { Cart } from '@/types/api/cart'
 
-export default function CartSection() {
+export interface CartLineItem {
+    id: number
+    name: string
+    slug: string
+    image: string
+    price: number
+    quantity: number
+    sizeLabel: string
+    colorLabel: string
+}
+
+export interface CartSummaryView {
+    subtotal: number
+    discount: number
+    deliveryFee: number
+    total: number
+}
+
+interface CartSectionProps {
+    items: CartLineItem[]
+    summary: CartSummaryView
+    onChanged?: () => void | Promise<void>
+}
+
+export default function CartSection({ items, summary, onChanged }: CartSectionProps) {
+    const [pending, startTransition] = useTransition()
+
+    const changeQty = (itemId: number, quantity: number) => {
+        if (quantity < 1) return
+        startTransition(async () => {
+            await customerBrowserFetch<Cart>(`/cart/items/${itemId}`, {
+                method: "PATCH",
+                body: { buyingQuantity: quantity },
+            })
+            await onChanged?.()
+        })
+    }
+
+    const removeItem = (itemId: number) => {
+        startTransition(async () => {
+            await customerBrowserFetch<Cart>(`/cart/items/${itemId}`, {
+                method: "DELETE",
+            })
+            await onChanged?.()
+        })
+    }
+
     return (
-        <section className='py-10'>
-            <div className="container">
+        <section className='py-2'>
+            <div className="w-full">
                 <Breadcrumb>
                     <BreadcrumbList>
                         <BreadcrumbItem>
                             <BreadcrumbLink render={<Link href="/">Home</Link>} />
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {/* <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger render={<Button size="icon-sm" variant="ghost"><BreadcrumbEllipsis /><span className="sr-only">Toggle menu</span></Button>} />
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                        <DropdownMenuItem>Themes</DropdownMenuItem>
-                                        <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </BreadcrumbItem> */}
                         <BreadcrumbItem>
-                            <BreadcrumbLink render={<Link href="/">Products</Link>} />
+                            <BreadcrumbLink render={<Link href="/account">Account</Link>} />
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className=" text-primary">Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage className=" text-primary">Cart</BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
 
-                <Heading text='Your cart' className='py-6 text-left' />
+                <Heading text='Your cart' className='!text-left py-6' />
                 <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-5 items-start relative">
                     <div className="xl:col-span-2 px-6  border rounded-2xl">
-                        {
-                            [...Array(5)].map((el, i) => (
-                                <div className='flex gap-4 border-b py-6' key={i}>
-                                    <Image src={"/images/shirt2.png"}
-                                        className='w-30'
-                                        width={400}
-                                        height={400}
-                                        alt='shirt'
-                                    />
+                        {items.length === 0 ? (
+                            <p className="py-10 text-black/60">Your cart is empty.</p>
+                        ) : (
+                            items.map((item) => (
+                                <div className='flex gap-4 border-b py-6' key={item.id}>
+                                    <Link href={`/products/${item.slug}`}>
+                                        <Image src={item.image}
+                                            className='w-30'
+                                            width={400}
+                                            height={400}
+                                            alt={item.name}
+                                        />
+                                    </Link>
                                     <div className='flex-1'>
                                         <div className='flex justify-between max-sm:gap-3'>
-                                            <h3 className='sm:text-[20px] font-satoshi-bold text-primary'>Gradient Graphic T-shirt</h3>
-                                            <PiTrashFill size={24} className='text-[#ff3333]' />
+                                            <h3 className='sm:text-[20px] font-satoshi-bold text-primary'>{item.name}</h3>
+                                            <button
+                                                type="button"
+                                                disabled={pending}
+                                                onClick={() => removeItem(item.id)}
+                                                aria-label={`Remove ${item.name}`}
+                                            >
+                                                <PiTrashFill size={24} className='text-[#ff3333]' />
+                                            </button>
                                         </div>
                                         <div className='mt-1 text-sm'>
                                             <span className='text-primary'>Size:</span>
-                                            Large
+                                            {" "}{item.sizeLabel || "-"}
                                         </div>
                                         <div className='text-sm'>
                                             <span className='text-primary'>Color:</span>
-                                            Large
+                                            {" "}{item.colorLabel || "-"}
                                         </div>
                                         <div className='mt-4 flex justify-between items-center'>
-                                            <h3 className='text-lg sm:text-[24px] font-satoshi-bold text-primary'>$240</h3>
+                                            <h3 className='text-lg sm:text-[24px] font-satoshi-bold text-primary'>${item.price}</h3>
                                             <div className='bg-tertiary w-fit py-2 sm:py-3.5 px-3 sm:px-5 rounded-4xl gap-3 flex items-center text-primary'>
-                                                <button >
+                                                <button
+                                                    type="button"
+                                                    disabled={pending}
+                                                    onClick={() => changeQty(item.id, item.quantity - 1)}
+                                                >
                                                     <Minus className="w-4 h-4 sm:w-5 sm:h-5" />
                                                 </button>
-                                                <span>1</span>
-                                                <button >
-                                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />                                                </button>
+                                                <span>{item.quantity}</span>
+                                                <button
+                                                    type="button"
+                                                    disabled={pending}
+                                                    onClick={() => changeQty(item.id, item.quantity + 1)}
+                                                >
+                                                    <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                                                </button>
                                             </div>
                                         </div>
 
                                     </div>
                                 </div>
                             ))
-                        }
+                        )}
                     </div>
                     <div className="sticky top-10 border rounded-2xl py-5 px-6">
                         <h3 className='text-[24px] font-satoshi-bold text-primary'>Order Summary</h3>
                         <div className='grid gap-5 mt-6 pb-6 border-b'>
                             <div className='flex text-[20px] justify-between'>
-                                <span className=''>Subtotal</span> <span className='text-primary'>$565</span>
+                                <span className=''>Subtotal</span> <span className='text-primary'>${summary.subtotal}</span>
                             </div>
                             <div className='flex text-[20px] justify-between'>
-                                <span className=''>Discount (-20%)</span> <span className='text-primary'>-$113</span>
+                                <span className=''>Discount</span> <span className='text-primary'>-${summary.discount}</span>
                             </div>
                             <div className='flex text-[20px] justify-between '>
-                                <span className=''>Delivery Fee</span> <span className='text-primary'>$15</span>
+                                <span className=''>Delivery Fee</span> <span className='text-primary'>${summary.deliveryFee}</span>
                             </div>
                         </div>
                         <div>
                             <div className='flex text-[20px] justify-between pt-6'>
-                                <span className='text-primary'>Total</span> <span className='text-primary'>$565</span>
+                                <span className='text-primary'>Total</span> <span className='text-primary'>${summary.total}</span>
                             </div>
                             <div className='flex py-6 gap-2 flex-wrap'>
                                 <div className='flex-1 flex items-center gap-1 bg-tertiary py-3 px-4 rounded-full'>
@@ -117,15 +172,16 @@ export default function CartSection() {
                                 <Button btnProps={{
                                     text: "Apply",
                                     variant: "black",
-                                    // className:"w-full"
                                 }} />
                             </div>
-                            <Button btnProps={{
-                                text: "Go to Checkout",
-                                icon: <ArrowRight />,
-                                // className='',
-                                variant: "black"
-                            }} />
+                            <Link href="/checkout" className="block">
+                                <Button btnProps={{
+                                    text: "Go to Checkout",
+                                    icon: <ArrowRight />,
+                                    variant: "black",
+                                    className: "w-full",
+                                }} />
+                            </Link>
                         </div>
                     </div>
                 </div>

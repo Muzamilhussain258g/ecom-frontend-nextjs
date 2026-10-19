@@ -1,27 +1,35 @@
 import Link from "next/link"
 import {
     Breadcrumb,
-    BreadcrumbEllipsis,
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Button } from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sliders } from "lucide-react"
 import Filters from "@/components/products/Filters"
-import ProductCard from "@/components/ProductCard"
 import ProductsGrid from "@/components/products/ProductsGrid"
+import type { ProductCardData } from "@/components/ProductCard"
 
-function AllProductsSections() {
+interface AllProductsSectionsProps {
+    products: ProductCardData[]
+    title?: string
+    page?: number
+    totalPages?: number
+    total?: number
+    limit?: number
+    categorySlug?: string
+}
+
+function AllProductsSections({
+    products,
+    title = "Casual",
+    page = 1,
+    totalPages = 1,
+    total = 0,
+    limit = 12,
+    categorySlug,
+}: AllProductsSectionsProps) {
     return (
         <section className="py-6 sm:py-10">
             <div className="container">
@@ -31,30 +39,27 @@ function AllProductsSections() {
                             <BreadcrumbLink render={<Link href="/">Home</Link>} />
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
-                        {/* <BreadcrumbItem>
-                            <DropdownMenu>
-                                <DropdownMenuTrigger render={<Button size="icon-sm" variant="ghost"><BreadcrumbEllipsis /><span className="sr-only">Toggle menu</span></Button>} />
-                                <DropdownMenuContent align="start">
-                                    <DropdownMenuGroup>
-                                        <DropdownMenuItem>Documentation</DropdownMenuItem>
-                                        <DropdownMenuItem>Themes</DropdownMenuItem>
-                                        <DropdownMenuItem>GitHub</DropdownMenuItem>
-                                    </DropdownMenuGroup>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </BreadcrumbItem> */}
                         <BreadcrumbItem>
-                            <BreadcrumbLink render={<Link href="/">Products</Link>} />
+                            <BreadcrumbLink render={<Link href="/products">Products</Link>} />
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage className=" text-primary">Breadcrumb</BreadcrumbPage>
+                            <BreadcrumbPage className=" text-primary">
+                                {categorySlug || title}
+                            </BreadcrumbPage>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="relative grid items-start gap-5 md:grid-cols-3 xl:grid-cols-4">
                     <Filters />
-                    <ProductsGrid />
+                    <ProductsGrid
+                        products={products}
+                        title={title}
+                        page={page}
+                        totalPages={totalPages}
+                        total={total}
+                        limit={limit}
+                    />
                 </div>
             </div>
         </section>

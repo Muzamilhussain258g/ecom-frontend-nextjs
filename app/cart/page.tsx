@@ -1,11 +1,5 @@
-import Heading from '@/components/Heading'
-import CartSection from '@/sections/cartS/CartSection'
-import React from 'react'
+import { redirect } from "next/navigation"
 
-export default function page() {
-    return (
-        <>
-            <CartSection />
-        </>
-    )
+export default function CartRedirectPage() {
+  redirect("/account/cart")
 }
