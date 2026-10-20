@@ -18,6 +18,7 @@ import { RiCoupon2Line } from 'react-icons/ri'
 import Button from '@/components/Button'
 import { customerBrowserFetch } from '@/lib/api/browser'
 import type { Cart } from '@/types/api/cart'
+import { toast } from 'sonner'
 
 export interface CartLineItem {
     id: number
@@ -49,20 +50,30 @@ export default function CartSection({ items, summary, onChanged }: CartSectionPr
     const changeQty = (itemId: number, quantity: number) => {
         if (quantity < 1) return
         startTransition(async () => {
+          try {
             await customerBrowserFetch<Cart>(`/cart/items/${itemId}`, {
                 method: "PATCH",
                 body: { buyingQuantity: quantity },
             })
+            toast.success("Cart quantity updated.")
             await onChanged?.()
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Could not update cart.")
+          }
         })
     }
 
     const removeItem = (itemId: number) => {
         startTransition(async () => {
+          try {
             await customerBrowserFetch<Cart>(`/cart/items/${itemId}`, {
                 method: "DELETE",
             })
+            toast.success("Item removed from cart.")
             await onChanged?.()
+          } catch (error) {
+            toast.error(error instanceof Error ? error.message : "Could not remove item.")
+          }
         })
     }
 

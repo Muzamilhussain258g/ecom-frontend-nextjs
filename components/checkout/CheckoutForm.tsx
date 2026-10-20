@@ -4,6 +4,8 @@ import { useActionState } from "react"
 import Button from "@/components/Button"
 import type { Address } from "@/types/api/order"
 import type { OrderActionResult } from "@/actions/orders"
+import { notifyAction } from "@/lib/action-toast"
+import { useRouter } from "next/navigation"
 
 interface CheckoutFormProps {
   addresses: Address[]
@@ -14,7 +16,13 @@ interface CheckoutFormProps {
 }
 
 export function CheckoutForm({ addresses, placeOrderAction }: CheckoutFormProps) {
-  const [state, formAction, pending] = useActionState(placeOrderAction, undefined)
+  const router = useRouter()
+  const [state, formAction, pending] = useActionState(
+    async (prev: OrderActionResult | undefined, data: FormData) => {
+      const result = await notifyAction(() => placeOrderAction(prev, data), "Order placed successfully.")
+      if (result.ok && result.orderId) router.push(`/account/orders/${result.orderId}`)
+      return result
+    }, undefined)
   const defaultId = addresses.find((a) => a.isDefault)?.id ?? addresses[0]?.id
 
   return (
@@ -50,6 +58,7 @@ export function CheckoutForm({ addresses, placeOrderAction }: CheckoutFormProps)
           text: pending ? "Placing order..." : "Place COD order",
           variant: "black",
           className: "w-fit",
+          disabled: pending,
         }}
       />
     </form>

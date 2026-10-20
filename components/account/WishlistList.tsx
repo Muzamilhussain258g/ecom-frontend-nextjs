@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useTransition } from "react"
 import type { WishlistActionResult } from "@/actions/wishlist"
+import { notifyAction } from "@/lib/action-toast"
 
 interface WishlistListProps {
   items: Array<{
@@ -46,7 +47,7 @@ export function WishlistList({ items, removeWishlistAction }: WishlistListProps)
               className="text-sm text-red-600"
               onClick={() =>
                 startTransition(async () => {
-                  await removeWishlistAction(item.productId)
+                  await notifyAction(() => removeWishlistAction(item.productId), "Removed from wishlist.")
                 })
               }
             >

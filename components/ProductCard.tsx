@@ -35,7 +35,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     alt={product.name}
                     className="w-full rounded-2xl"
                 />
-                <div className="absolute top-3 right-3 z-10 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+                <div className="absolute top-3 right-3 z-10">
                     <WishlistButton productId={product.id} />
                 </div>
             </div>

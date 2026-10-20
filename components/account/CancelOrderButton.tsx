@@ -3,6 +3,7 @@
 import { useTransition } from "react"
 import Button from "@/components/Button"
 import type { OrderActionResult } from "@/actions/orders"
+import { notifyAction } from "@/lib/action-toast"
 
 export function CancelOrderButton({
   orderId,
@@ -17,10 +18,11 @@ export function CancelOrderButton({
     <Button
       btnProps={{
         text: pending ? "Cancelling..." : "Cancel order",
+        disabled: pending,
         variant: "white",
         onClick: () =>
           startTransition(async () => {
-            await cancelOrderAction(orderId)
+            await notifyAction(() => cancelOrderAction(orderId), "Order cancelled.")
           }),
       }}
     />

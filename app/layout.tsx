@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import { SiteFooterChrome } from "@/components/SiteChrome";
 import { SITE_URL } from "@/lib/api/config";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -47,6 +48,7 @@ export default function RootLayout({
           <Header />
           {children}
           <SiteFooterChrome />
+          <Toaster />
         </TooltipProvider>
       </body>
     </html>

@@ -4,6 +4,7 @@ import { useActionState, useTransition } from "react"
 import Button from "@/components/Button"
 import type { Address } from "@/types/api/order"
 import type { AddressActionResult } from "@/actions/addresses"
+import { notifyAction } from "@/lib/action-toast"
 
 interface AddressManagerProps {
   addresses: Address[]
@@ -19,7 +20,9 @@ export function AddressManager({
   createAddressAction,
   deleteAddressAction,
 }: AddressManagerProps) {
-  const [state, formAction, pending] = useActionState(createAddressAction, undefined)
+  const [state, formAction, pending] = useActionState(
+    (prev: AddressActionResult | undefined, data: FormData) =>
+      notifyAction(() => createAddressAction(prev, data), "Address saved."), undefined)
   const [deleting, startTransition] = useTransition()
 
   return (
@@ -50,7 +53,7 @@ export function AddressManager({
                   className="text-sm text-red-600"
                   onClick={() =>
                     startTransition(async () => {
-                      await deleteAddressAction(address.id)
+                      await notifyAction(() => deleteAddressAction(address.id), "Address deleted.")
                     })
                   }
                 >
@@ -98,6 +101,7 @@ export function AddressManager({
         <Button
           btnProps={{
             text: pending ? "Saving..." : "Save address",
+            disabled: pending,
             variant: "black",
             className: "w-fit",
           }}

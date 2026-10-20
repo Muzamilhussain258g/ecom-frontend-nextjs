@@ -6,6 +6,7 @@ export interface ButtonData {
     variant?: 'black' | 'white'
     className?: string
     onClick?: () => void
+    disabled?: boolean
 }
 
 interface ButtonProps {
@@ -17,6 +18,7 @@ const Button = ({ btnProps: {
     icon,
     variant = "white",
     onClick,
+    disabled,
     className = ""
 
 } }: ButtonProps) => {
@@ -30,7 +32,7 @@ const Button = ({ btnProps: {
             py-4 px-12 rounded-full font-medium
             ${className}
         `}
-            onClick={onClick} >
+            onClick={onClick} disabled={disabled} >
             {text && text}
             {icon && <span className='ml-2'>{icon}</span>}
         </button >

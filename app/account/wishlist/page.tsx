@@ -7,6 +7,7 @@ import type { WishlistItem } from "@/types/api/order"
 import { WishlistList } from "@/components/account/WishlistList"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { WishlistActionResult } from "@/actions/wishlist"
+import { setWishlistActive } from "@/hooks/use-wishlist"
 
 function normalizeWishlist(data: { items?: WishlistItem[] } | WishlistItem[]): WishlistItem[] {
   if (Array.isArray(data)) return data
@@ -59,6 +60,7 @@ export default function WishlistPage() {
   const removeWishlistAction = async (productId: number): Promise<WishlistActionResult> => {
     try {
       await customerBrowserFetch(`/wishlist/${productId}`, { method: "DELETE" })
+      setWishlistActive(productId, false)
       await load()
       return { ok: true }
     } catch (err) {

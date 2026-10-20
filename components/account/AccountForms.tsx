@@ -3,6 +3,7 @@
 import { useActionState } from "react"
 import Button from "@/components/Button"
 import type { ActionResult } from "@/actions/auth"
+import { notifyAction } from "@/lib/action-toast"
 
 interface AccountFormsProps {
   name: string
@@ -24,11 +25,13 @@ export function AccountForms({
   changePasswordAction,
 }: AccountFormsProps) {
   const [profileState, profileAction, profilePending] = useActionState(
-    updateProfileAction,
+    (prev: ActionResult | undefined, data: FormData) =>
+      notifyAction(() => updateProfileAction(prev, data), "Profile saved."),
     undefined,
   )
   const [passwordState, passwordAction, passwordPending] = useActionState(
-    changePasswordAction,
+    (prev: ActionResult | undefined, data: FormData) =>
+      notifyAction(() => changePasswordAction(prev, data), "Password updated."),
     undefined,
   )
 
@@ -61,6 +64,7 @@ export function AccountForms({
         <Button
           btnProps={{
             text: profilePending ? "Saving..." : "Save profile",
+            disabled: profilePending,
             variant: "black",
             className: "w-fit",
           }}
@@ -95,6 +99,7 @@ export function AccountForms({
         <Button
           btnProps={{
             text: passwordPending ? "Updating..." : "Update password",
+            disabled: passwordPending,
             variant: "black",
             className: "w-fit",
           }}

@@ -15,6 +15,8 @@ import {
 } from '@/lib/api/mappers'
 import { addToCartAction } from '@/actions/cart'
 import { useRouter } from 'next/navigation'
+import { notifyAction } from '@/lib/action-toast'
+import { toast } from 'sonner'
 
 interface ProductDetailSectionProps {
     product: ProductDetail
@@ -59,13 +61,14 @@ function ProductDetailSection({ product }: ProductDetailSectionProps) {
     const onAddToCart = () => {
         if (!selectedVariant) {
             setMessage("No purchasable variant available.")
+            toast.error("No purchasable variant available.")
             return
         }
         startTransition(async () => {
-            const result = await addToCartAction({
+            const result = await notifyAction(() => addToCartAction({
                 variantId: selectedVariant.id,
                 buyingQuantity: qty,
-            })
+            }), "Added to cart.")
             if (result.ok) {
                 setMessage("Added to cart")
                 router.refresh()
@@ -163,6 +166,7 @@ function ProductDetailSection({ product }: ProductDetailSectionProps) {
                         </div>
                         <Button btnProps={{
                             text: pending ? "Adding..." : "Add to Cart",
+                            disabled: pending,
                             className: "flex-1 min-w-[140px]",
                             variant: "black",
                             onClick: onAddToCart,

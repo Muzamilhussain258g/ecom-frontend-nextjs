@@ -32,7 +32,7 @@ export async function placeOrderAction(
     })
     revalidatePath("/cart")
     revalidatePath("/account/orders")
-    redirect(`/account/orders/${order.id}`)
+    return { ok: true, orderId: order.id, message: "Order placed successfully." }
   } catch (error) {
     if (typeof error === "object" && error && "digest" in error) {
       throw error

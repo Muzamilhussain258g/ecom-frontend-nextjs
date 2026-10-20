@@ -9,6 +9,7 @@ import Button from '@/components/Button';
 import ReviewCard from '@/components/ReviewCard';
 import type { ReviewCardProps } from '@/components/ReviewCard'
 import { submitReviewAction, type ReviewActionResult } from '@/actions/reviews'
+import { notifyAction } from '@/lib/action-toast'
 
 interface ProductTabsSectionProps {
     productId: number
@@ -34,7 +35,7 @@ const ProductTabsSection = ({
     const [open, setOpen] = useState(false);
     const [showForm, setShowForm] = useState(false)
     const [state, formAction, pending] = useActionState<ReviewActionResult | undefined, FormData>(
-        submitReviewAction,
+        (prev, data) => notifyAction(() => submitReviewAction(prev, data), "Review submitted."),
         undefined,
     )
 
