@@ -4,11 +4,11 @@ export class ApiError extends Error {
   details?: unknown
 
   constructor(
-    message: string,
+    message: string | string[],
     status: number,
     options?: { path?: string; details?: unknown },
   ) {
-    super(message)
+    super(Array.isArray(message) ? message.join(", ") : message)
     this.name = "ApiError"
     this.status = status
     this.path = options?.path

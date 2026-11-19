@@ -7,7 +7,7 @@ import type { WishlistItem } from "@/types/api/order"
 import { WishlistList } from "@/components/account/WishlistList"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { WishlistActionResult } from "@/actions/wishlist"
-import { setWishlistActive } from "@/hooks/use-wishlist"
+import { useWishlistState } from "@/hooks/use-wishlist"
 
 function normalizeWishlist(data: { items?: WishlistItem[] } | WishlistItem[]): WishlistItem[] {
   if (Array.isArray(data)) return data
@@ -16,6 +16,7 @@ function normalizeWishlist(data: { items?: WishlistItem[] } | WishlistItem[]): W
 }
 
 export default function WishlistPage() {
+  const { setWishlistActive } = useWishlistState()
   const [items, setItems] = useState<
     Array<{
       id: number

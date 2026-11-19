@@ -1,3 +1,7 @@
+import Link from "next/link"
+import { parseProductQuery } from "@/lib/api/product-query"
+import { isApiError } from "@/lib/api/errors"
+import type { ListProductsParams, ProductListResult } from "@/types/api/product"
 import AllProductsSection from '@/sections/allProductsS/AllProductsSection'
 import { listProducts } from '@/lib/api/public/products'
 import { mapProductToCard } from '@/lib/api/mappers'
@@ -9,38 +13,34 @@ export const metadata: Metadata = {
   description: 'Browse the SHOP.CO product catalog with search, filters, and sorting.',
 }
 
-type SearchParams = Promise<{
-  page?: string
-  search?: string
-  category?: string
-  sortOrder?: string
-  limit?: string
-}>
+type SearchParams = Promise<Record<string, string | string[] | undefined>>
 
 export default async function ProductsPage({
   searchParams,
 }: {
   searchParams: SearchParams
 }) {
-  const params = await searchParams
-  const page = Number(params.page || 1) || 1
-  const limit = Number(params.limit || 12) || 12
-  const sortOrder = params.sortOrder === 'desc' ? 'desc' : 'asc'
-
-  const result = await listProducts({
-    page,
-    limit,
-    search: params.search,
-    category: params.category,
-    sortOrder,
-  })
+  const rawParams = await searchParams
+  let params: ListProductsParams
+  let result: ProductListResult
+  try {
+    params = parseProductQuery(rawParams)
+    result = await listProducts(params)
+  } catch (error) {
+    if (!isApiError(error) || error.status !== 400) throw error
+    return <div className="container py-12" role="alert">
+      <h1 className="text-2xl font-bold">Check your product filters</h1>
+      <p className="my-4">{error.message}</p>
+      <Link className="underline" href="/products">Reset filters</Link>
+    </div>
+  }
 
   const products = result.products.map(mapProductToCard)
   const title = params.category
     ? params.category.replace(/-/g, ' ')
     : params.search
       ? `Search: ${params.search}`
-      : 'Casual'
+      : 'Products'
 
   return (
     <Suspense fallback={<div className="container py-10">Loading products...</div>}>

@@ -16,7 +16,7 @@ const TopSellingSection = ({ products = [] }: TopSellingSectionProps) => {
     return (
         <section className='py-15'>
             <div className="container mx-auto">
-                <Heading text='top selling' />
+                <Heading text='Explore products' />
 
                 <Swiper className='mt-13 mb-9'
                     modules={[Autoplay, FreeMode]}

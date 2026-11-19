@@ -11,6 +11,7 @@ export interface ProductCategoryAssignment {
 }
 
 export interface ProductListItem {
+  isWishlisted?: boolean
   id: number
   name: string
   slug: string
@@ -57,6 +58,7 @@ export interface ProductReviewPreview {
 }
 
 export interface ProductDetail {
+  isWishlisted?: boolean
   id: number
   name: string
   slug: string
@@ -82,6 +84,10 @@ export interface ListProductsParams {
   limit?: number
   search?: string
   category?: string
+  minPrice?: number
+  maxPrice?: number
+  inStock?: boolean
+  sortBy?: "name" | "price" | "createdAt"
   sortOrder?: "asc" | "desc"
 }
 

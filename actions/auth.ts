@@ -42,6 +42,7 @@ export async function signUpAction(
     }
   }
 
+  revalidatePath("/", "layout")
   redirect("/account")
 }
 
@@ -71,6 +72,7 @@ export async function signInAction(
     }
   }
 
+  revalidatePath("/", "layout")
   redirect(next.startsWith("/") ? next : "/account")
 }
 
@@ -84,7 +86,7 @@ export async function signOutAction() {
     // ignore API errors on logout
   }
   await clearAuthCookies()
-  revalidatePath("/")
+  revalidatePath("/", "layout")
   redirect("/")
 }
 

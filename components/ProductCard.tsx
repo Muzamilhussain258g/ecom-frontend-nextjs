@@ -6,6 +6,7 @@ import RatingStars from './RatingStars';
 import WishlistButton from './WishlistButton';
 
 export interface ProductCardData {
+    isWishlisted?: boolean
     id: number
     name: string
     slug?: string
@@ -28,6 +29,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
     const content = (
         <div className="group">
             <div className="relative overflow-hidden rounded-2xl">
+                {href && <Link href={href} aria-label={product.name} className="absolute inset-0 z-[1]" />}
                 <Image
                     height={444}
                     width={306}
@@ -36,18 +38,18 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     className="w-full rounded-2xl"
                 />
                 <div className="absolute top-3 right-3 z-10">
-                    <WishlistButton productId={product.id} />
+                    <WishlistButton productId={product.id} productSlug={product.slug} initialActive={product.isWishlisted} />
                 </div>
             </div>
             <div className="mt-4">
-                <h3 className="text-primary text-md sm:text-[20px] font-satoshi-bold!">{product.name}</h3>
-                <div className="flex items-center gap-2">
+                <h3 className="text-primary text-md sm:text-[20px] font-satoshi-bold!">{href ? <Link href={href}>{product.name}</Link> : product.name}</h3>
+                {product.reviews > 0 && <div className="flex items-center gap-2">
                     <RatingStars rating={product.rating} />
                     <span className="max-sm:text-sm">
                         <span className="text-primary">{product.rating} </span>
                         /5
                     </span>
-                </div>
+                </div>}
                 <div className="text-lg sm:text-[24px] font-satoshi-bold! flex items-center gap-4.5">
                     <span className="text-primary">${product.price}</span>
                     {product.oldPrice && (
@@ -64,14 +66,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             </div>
         </div>
     )
-
-    if (href) {
-        return (
-            <Link href={href} className="block">
-                {content}
-            </Link>
-        )
-    }
 
     return content
 }

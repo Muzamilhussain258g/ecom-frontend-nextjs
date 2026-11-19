@@ -22,6 +22,7 @@ export function resolveMediaUrl(url?: string | null): string {
 
 export function mapProductToCard(
   product: ProductListItem | ProductDetail | {
+    isWishlisted?: boolean
     id: number
     name: string
     slug: string
@@ -52,6 +53,7 @@ export function mapProductToCard(
       : 0
 
   return {
+    isWishlisted: product.isWishlisted,
     id: product.id,
     name: product.name,
     slug: product.slug,

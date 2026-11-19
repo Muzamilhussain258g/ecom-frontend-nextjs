@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 
 export default async function HomePage() {
   const [newArrivals, topSelling, categoriesResult] = await Promise.all([
-    listProducts({ page: 1, limit: 8, sortOrder: 'asc' }),
-    listProducts({ page: 1, limit: 8, sortOrder: 'desc' }),
+    listProducts({ page: 1, limit: 8, sortBy: 'createdAt', sortOrder: 'desc' }),
+    listProducts({ page: 1, limit: 8, sortBy: 'name', sortOrder: 'asc' }),
     listCategories({ page: 1, limit: 8, depth: 1 }),
   ])
 

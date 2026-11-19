@@ -1,3 +1,7 @@
+import { cache } from "react"
+import { redirect } from "next/navigation"
+import { isApiError } from "../errors"
+import type { ApiFetchOptions } from "../client"
 import { apiFetch, apiFetchSafe } from "../client"
 import type {
   ListProductsParams,
@@ -6,49 +10,43 @@ import type {
   ProductReviewsResult,
 } from "@/types/api/product"
 
-export async function listProducts(params: ListProductsParams = {}) {
-  return apiFetchSafe<ProductListResult>(
-    {
-      path: "/products",
-      query: {
-        page: params.page ?? 1,
-        limit: params.limit ?? 12,
-        search: params.search,
-        category: params.category,
-        sortOrder: params.sortOrder,
-      },
-      revalidate: 60,
-      tags: ["products"],
-    },
-    {
-      products: [],
-      meta: {
-        pagination: {
-          page: params.page ?? 1,
-          limit: params.limit ?? 12,
-          total: 0,
-          totalPages: 0,
-          hasNextPage: false,
-          hasPreviousPage: false,
-        },
-      },
-    },
-  )
-}
-
-export async function getProductBySlug(slug: string) {
-  return apiFetch<ProductDetail>({
-    path: `/products/${slug}`,
-    revalidate: 60,
-    tags: ["products", `product:${slug}`],
+// Optional auth never writes cookies during Server Component rendering.
+// Personalised product responses must not enter the shared data cache.
+export async function listProducts(params: ListProductsParams = {}, guest = false) {
+  return productRequest<ProductListResult>({
+    path: "/products",
+    query: { ...params, page: params.page ?? 1, limit: params.limit ?? 12,
+      sortBy: params.sortBy ?? "createdAt", sortOrder: params.sortOrder ?? "desc" },
+    auth: guest ? false : "optional",
+    cache: "no-store",
   })
 }
+
+async function productRequest<T>(options: ApiFetchOptions): Promise<T> {
+  try {
+    return await apiFetch<T>(options)
+  } catch (error) {
+    if (isApiError(error) && error.status === 401) {
+      redirect('/login?next=' + encodeURIComponent(options.path))
+    }
+    throw error
+  }
+}
+
+export const getProductBySlug = cache(async (slug: string) => {
+  return productRequest<ProductDetail>({
+    path: '/products/' + encodeURIComponent(slug),
+    auth: "optional",
+    cache: "no-store",
+  })
+})
 
 export async function getProductBySlugSafe(slug: string) {
   try {
     return await getProductBySlug(slug)
-  } catch {
-    return null
+  } catch (error) {
+    if (isApiError(error) && error.status === 404) return null
+    throw error
   }
 }
 

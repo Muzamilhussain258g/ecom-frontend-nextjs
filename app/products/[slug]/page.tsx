@@ -42,7 +42,12 @@ export default async function ProductDetailPage({ params }: Props) {
   const product = await getProductBySlugSafe(slug)
   if (!product) notFound()
 
-  const related = await listProducts({ page: 1, limit: 8 })
+  const category = product.productCategories.find(item => item.isPrimary)?.category
+    ?? product.productCategories[0]?.category
+  // No unrelated fallback: omit recommendations when no assigned category exists.
+  const related = category
+    ? await listProducts({ page: 1, limit: 5, category: category.slug })
+    : { products: [] }
   const relatedCards = related.products
     .filter((p) => p.id !== product.id)
     .slice(0, 4)
@@ -92,7 +97,7 @@ export default async function ProductDetailPage({ params }: Props) {
           totalReviews={product.reviews.totalReviews}
         />
       </Suspense>
-      <RelatedProductsSection products={relatedCards} />
+      {relatedCards.length > 0 && <RelatedProductsSection products={relatedCards} />}
     </>
   )
 }

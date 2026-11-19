@@ -3,7 +3,7 @@
 import { Heart } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState, useTransition } from "react"
-import { setWishlistActive, useWishlist } from "@/hooks/use-wishlist"
+import { useWishlistState, useWishlist } from "@/hooks/use-wishlist"
 import { cn } from "@/lib/utils"
 import { customerBrowserFetch } from "@/lib/api/browser"
 import { ApiError } from "@/lib/api/errors"
@@ -12,6 +12,7 @@ import { toast } from "sonner"
 interface WishlistButtonProps {
   productId: number
   initialActive?: boolean
+  productSlug?: string
   className?: string
   /** Larger control for product detail */
   size?: "sm" | "md"
@@ -20,12 +21,14 @@ interface WishlistButtonProps {
 
 export default function WishlistButton({
   productId,
-  initialActive = false,
+  initialActive,
+  productSlug,
   className,
   size = "sm",
   showLabel = false,
 }: WishlistButtonProps) {
   const router = useRouter()
+  const { authenticated, setWishlistActive } = useWishlistState()
   const active = useWishlist(productId, initialActive)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [pending, startTransition] = useTransition()
@@ -33,6 +36,18 @@ export default function WishlistButton({
   const toggle = (event: React.MouseEvent) => {
     event.preventDefault()
     event.stopPropagation()
+
+    if (!authenticated) {
+      router.push(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`)
+      toast.info("Please sign in to save products.")
+      return
+    }
+
+    // Other endpoints (such as collections) may not include wishlist state.
+    if (active === undefined && productSlug) {
+      router.push(`/products/${encodeURIComponent(productSlug)}`)
+      return
+    }
 
     startTransition(async () => {
       const nextActive = !active
@@ -44,6 +59,7 @@ export default function WishlistButton({
           await customerBrowserFetch(`/wishlist/${productId}`, { method: "DELETE" })
         }
         setWishlistActive(productId, nextActive)
+        router.refresh()
         toast.success(nextActive ? "Added to wishlist." : "Removed from wishlist.")
       } catch (error) {
         setErrorMessage("Could not update wishlist. Please try again.")
@@ -61,7 +77,7 @@ export default function WishlistButton({
   return (
     <button
       type="button"
-      aria-label={active ? "Remove from wishlist" : "Add to wishlist"}
+      aria-label={active === undefined ? "View product wishlist status" : active ? "Remove from wishlist" : "Add to wishlist"}
       aria-pressed={active}
       title={errorMessage ?? (active ? "Remove from wishlist" : "Add to wishlist")}
       disabled={pending}

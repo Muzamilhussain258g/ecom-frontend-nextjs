@@ -171,7 +171,7 @@ function ProductDetailSection({ product }: ProductDetailSectionProps) {
                             variant: "black",
                             onClick: onAddToCart,
                         }} />
-                        <WishlistButton
+                        <WishlistButton initialActive={product.isWishlisted}
                             productId={product.id}
                             size="md"
                             showLabel
