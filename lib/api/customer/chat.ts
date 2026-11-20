@@ -34,7 +34,7 @@ export function getMessages(
 
 export function sendMessage(
   conversationId: number,
-  payload: { clientMessageId: string; text?: string; attachmentIds?: number[] },
+  payload: { clientMessageId: string; text?: string; attachmentIds?: string[] },
 ) {
   return customerBrowserFetch<ChatMessage>(
     `/chat/conversations/${conversationId}/messages`,
@@ -59,14 +59,14 @@ export function reserveUpload(
   )
 }
 
-export function completeUpload(conversationId: number, uploadId: number) {
+export function completeUpload(conversationId: number, uploadId: string) {
   return customerBrowserFetch<ChatAttachment>(
     `/chat/conversations/${conversationId}/uploads/${uploadId}/complete`,
     { method: "POST" },
   )
 }
 
-export function getAttachmentAccess(attachmentId: number) {
+export function getAttachmentAccess(attachmentId: string) {
   return customerBrowserFetch<{ url: string; expiresAt: string }>(
     `/chat/attachments/${attachmentId}/access`,
   )

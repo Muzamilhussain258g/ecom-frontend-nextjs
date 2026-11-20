@@ -8,11 +8,11 @@ import { notifyAction } from "@/lib/action-toast"
 interface AccountFormsProps {
   name: string
   email: string
-  updateProfileAction: (
+  updateProfile: (
     prev: ActionResult | undefined,
     formData: FormData,
   ) => Promise<ActionResult>
-  changePasswordAction: (
+  changePassword: (
     prev: ActionResult | undefined,
     formData: FormData,
   ) => Promise<ActionResult>
@@ -21,17 +21,17 @@ interface AccountFormsProps {
 export function AccountForms({
   name,
   email,
-  updateProfileAction,
-  changePasswordAction,
+  updateProfile,
+  changePassword,
 }: AccountFormsProps) {
   const [profileState, profileAction, profilePending] = useActionState(
     (prev: ActionResult | undefined, data: FormData) =>
-      notifyAction(() => updateProfileAction(prev, data), "Profile saved."),
+      notifyAction(() => updateProfile(prev, data), "Profile saved."),
     undefined,
   )
   const [passwordState, passwordAction, passwordPending] = useActionState(
     (prev: ActionResult | undefined, data: FormData) =>
-      notifyAction(() => changePasswordAction(prev, data), "Password updated."),
+      notifyAction(() => changePassword(prev, data), "Password updated."),
     undefined,
   )
 

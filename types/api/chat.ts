@@ -5,7 +5,7 @@ export interface ChatUser {
 }
 
 export interface ChatAttachment {
-  id: number
+  id: string
   resourceType: "image" | "video"
   format: string
   bytes: number
@@ -51,7 +51,7 @@ export interface ChatMessagePage {
 }
 
 export interface ChatUploadReservation {
-  uploadId: number
+  uploadId: string
   uploadUrl: string
   fields: Record<string, string | number | boolean>
   maxBytes: number
