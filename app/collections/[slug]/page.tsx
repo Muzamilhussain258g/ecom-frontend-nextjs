@@ -36,6 +36,7 @@ export default async function CollectionPage({ params }: Props) {
 
   return (
     <AllProductsSection
+      showCatalogControls={false}
       products={products}
       title={collection.name}
       total={products.length}

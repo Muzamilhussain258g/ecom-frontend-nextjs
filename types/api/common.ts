@@ -2,7 +2,7 @@ export interface ApiEnvelope<T> {
   success: boolean
   method?: string
   statusCode: number
-  message: string
+  message: string | string[]
   path?: string
   timestamp?: string
   data: T

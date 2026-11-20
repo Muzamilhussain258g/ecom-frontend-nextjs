@@ -15,7 +15,7 @@ export interface ApiFetchOptions {
   method?: string
   query?: Record<string, QueryValue>
   body?: unknown
-  auth?: boolean
+  auth?: boolean | "optional"
   cache?: RequestCache
   revalidate?: number | false
   tags?: string[]
@@ -123,7 +123,7 @@ export async function apiFetch<T>(options: ApiFetchOptions): Promise<T> {
       : {}),
   })
 
-  if (res.status === 401 && auth && !_retried) {
+  if (res.status === 401 && auth === true && !_retried) {
     const refreshed = await tryRefreshTokens()
     if (refreshed) {
       return apiFetch<T>({ ...options, _retried: true })

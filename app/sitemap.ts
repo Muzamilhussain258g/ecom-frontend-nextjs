@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ]
 
   const [productsResult, collections] = await Promise.all([
-    listProducts({ page: 1, limit: 100 }),
+    listProducts({ page: 1, limit: 100 }, true),
     listCollections(),
   ])
 

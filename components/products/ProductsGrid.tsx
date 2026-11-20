@@ -25,6 +25,7 @@ import { DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 interface ProductsGridProps {
     products: ProductCardData[]
+    showCatalogControls?: boolean
     title?: string
     page?: number
     totalPages?: number
@@ -34,6 +35,7 @@ interface ProductsGridProps {
 
 export default function ProductsGrid({
     products,
+    showCatalogControls = true,
     title = "Casual",
     page = 1,
     totalPages = 1,
@@ -43,15 +45,25 @@ export default function ProductsGrid({
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
-    const sortOption = searchParams.get("sortOrder") === "desc" ? "priceHigh" : "priceLow"
+    const sortOption = (searchParams.get("sortBy") ?? "createdAt") + ":" + (searchParams.get("sortOrder") ?? "desc")
+    const sortOptions = [
+        { value: "createdAt:desc", label: "Newest first" },
+        { value: "createdAt:asc", label: "Oldest first" },
+        { value: "name:asc", label: "A to Z" },
+        { value: "name:desc", label: "Z to A" },
+        { value: "price:asc", label: "Price: low to high" },
+        { value: "price:desc", label: "Price: high to low" },
+    ]
     const [open, setOpen] = React.useState(false)
 
-    const start = total === 0 ? 0 : (page - 1) * limit + 1
-    const end = Math.min(page * limit, total)
+    const start = products.length === 0 ? 0 : (page - 1) * limit + 1
+    const end = products.length === 0 ? 0 : Math.min(page * limit, total)
 
     const setSort = (value: string) => {
         const params = new URLSearchParams(searchParams.toString())
-        params.set("sortOrder", value === "priceHigh" ? "desc" : "asc")
+        const [sortBy, sortOrder] = value.split(":")
+        params.set("sortBy", sortBy)
+        params.set("sortOrder", sortOrder)
         params.set("page", "1")
         router.push(`${pathname}?${params.toString()}`)
     }
@@ -70,22 +82,20 @@ export default function ProductsGrid({
     })
 
     return (
-        <div className='min-w-0 md:col-span-2 xl:col-span-3'>
+        <div className={showCatalogControls ? 'min-w-0 md:col-span-2 xl:col-span-3' : 'min-w-0 col-span-full'}>
             <div className='mb-5 flex flex-wrap items-end justify-between gap-x-4 gap-y-2'>
                 <h2 className='text-[28px] leading-tight font-satoshi-bold! text-primary sm:text-[32px]'>{title}</h2>
-                <Filters variant="mobile" />
+                {showCatalogControls && <Filters variant="mobile" />}
                 <div className='max-sm:mt-2 flex w-full min-w-0 items-center justify-between gap-2 text-sm md:w-auto md:justify-end md:gap-4 md:text-base'>
                     <div className='min-w-0 whitespace-nowrap text-black/60'>
                         Showing {start}-{end} of {total}<span className='hidden sm:inline'> Products</span>
                     </div>
-                    <div className='flex shrink-0 items-center whitespace-nowrap'>
+                    {showCatalogControls && <div className='flex shrink-0 items-center whitespace-nowrap'>
                         <span className='hidden min-[375px]:inline'>Sort by:</span>
                         <DropdownMenu open={open} onOpenChange={setOpen}>
                             <DropdownMenuTrigger render={
                                 <button className='ml-1 inline-flex items-center whitespace-nowrap font-bold text-primary'>
-                                    {sortOption === "priceLow"
-                                        ? "A to Z"
-                                        : "Z to A"}
+                                    {sortOptions.find(option => option.value === sortOption)?.label ?? "Newest first"}
                                     <ChevronDown className='size-4 sm:size-5' />
                                 </button>
                             } />
@@ -93,13 +103,12 @@ export default function ProductsGrid({
                                 <DropdownMenuGroup>
                                     <DropdownMenuLabel>Sort Options</DropdownMenuLabel>
                                     <DropdownMenuRadioGroup value={sortOption} onValueChange={setSort}>
-                                        <DropdownMenuRadioItem value="priceLow">A to Z</DropdownMenuRadioItem>
-                                        <DropdownMenuRadioItem value="priceHigh">Z to A</DropdownMenuRadioItem>
+                                        {sortOptions.map(option => <DropdownMenuRadioItem key={option.value} value={option.value}>{option.label}</DropdownMenuRadioItem>)}
                                     </DropdownMenuRadioGroup>
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                    </div>
+                    </div>}
                 </div>
             </div>
             <div className="grid grid-cols-1 gap-x-3 gap-y-6 min-[375px]:grid-cols-2 sm:gap-x-5 sm:gap-y-8 md:grid-cols-2 xl:grid-cols-3">

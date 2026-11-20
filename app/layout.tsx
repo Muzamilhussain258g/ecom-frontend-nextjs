@@ -1,3 +1,6 @@
+import { createHash } from "node:crypto";
+import { getAccessToken } from "@/lib/api/cookies";
+import { WishlistProvider } from "@/hooks/use-wishlist";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
@@ -33,23 +36,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const accessToken = await getAccessToken();
+  const sessionKey = accessToken
+    ? createHash("sha256").update(accessToken).digest("hex")
+    : "guest";
   return (
     <html
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>
-          <Header />
-          {children}
-          <SiteFooterChrome />
-          <Toaster />
-        </TooltipProvider>
+        <WishlistProvider key={sessionKey} authenticated={Boolean(accessToken)}>
+          <TooltipProvider>
+            <Header />
+            {children}
+            <SiteFooterChrome />
+            <Toaster />
+          </TooltipProvider>
+        </WishlistProvider>
       </body>
     </html>
   );

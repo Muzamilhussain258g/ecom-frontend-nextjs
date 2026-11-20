@@ -19,6 +19,7 @@ interface AllProductsSectionsProps {
     total?: number
     limit?: number
     categorySlug?: string
+    showCatalogControls?: boolean
 }
 
 function AllProductsSections({
@@ -29,6 +30,7 @@ function AllProductsSections({
     total = 0,
     limit = 12,
     categorySlug,
+    showCatalogControls = true,
 }: AllProductsSectionsProps) {
     return (
         <section className="py-6 sm:py-10">
@@ -51,8 +53,9 @@ function AllProductsSections({
                     </BreadcrumbList>
                 </Breadcrumb>
                 <div className="relative grid items-start gap-5 md:grid-cols-3 xl:grid-cols-4">
-                    <Filters />
+                    {showCatalogControls && <Filters />}
                     <ProductsGrid
+                        showCatalogControls={showCatalogControls}
                         products={products}
                         title={title}
                         page={page}
