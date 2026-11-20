@@ -9,6 +9,7 @@ import {
   MapPin,
   Package,
   ShoppingCart,
+  MessageCircle,
   UserRound,
 } from "lucide-react"
 import {
@@ -32,6 +33,7 @@ const navItems = [
   { title: "Orders", href: "/account/orders", icon: Package },
   { title: "Addresses", href: "/account/addresses", icon: MapPin },
   { title: "Wishlist", href: "/account/wishlist", icon: Heart },
+  { title: "Support Chat", href: "/account/support", icon: MessageCircle },
 ]
 
 export function AccountAppSidebar() {

@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params
   const product = await getProductBySlugSafe(slug)
+  console.log("productdetail", product);
   if (!product) notFound()
 
   const related = await listProducts({ page: 1, limit: 8 })
